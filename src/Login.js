@@ -17,7 +17,7 @@ export default class Login extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { email: '', password: '', redirect: '/', isLoggedIn: false };
+        this.state = { email: '', password: '' };
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -105,17 +105,17 @@ export default class Login extends React.Component {
         });
     }
 
-    handleSubmit() {
+    handleSubmit(e) {
         localStorage.setItem("email", 'andres@mail.com');
         localStorage.setItem("password", 'afqd');
-        if (this.state.email === localStorage.getItem('email') && this.state.password === localStorage.getItem('password')) {
-            alert("Ingresó Satisfactoriamente!!")
-            this.setState({ isLoggedIn: true })
-            window.location = "/tasks";
+        localStorage.setItem("name", 'Andres');
+        localStorage.setItem('isLoggedIn',false);
+        e.preventDefault();
+        if(this.state.email === localStorage.getItem('email') && this.state.password === localStorage.getItem('password')){
+            localStorage.setItem('isLoggedIn',true);
+            window.location.href = "/";
         } else {
-            alert("Datos Incorrectos!!")
-            window.location = "/"
-
+            alert("Los datos que ingresó no son correctos");
         }
     }
 

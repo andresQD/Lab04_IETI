@@ -16,6 +16,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import MailIcon from '@material-ui/icons/Mail';
 
 const drawerWidth = 240;
 
@@ -58,6 +59,7 @@ function ResponsiveDrawer(props) {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const email = localStorage.getItem('email');
+  const name = localStorage.getItem('name');
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -69,9 +71,18 @@ function ResponsiveDrawer(props) {
       <Divider />
       <div>
         <Typography variant="h7" noWrap>
-            <PersonIcon/>
+            <MailIcon/>
             {email}
         </Typography>
+      </div>
+      <div>
+        <Typography variant="h7" noWrap>
+            <PersonIcon/>
+            {name}
+        </Typography>
+      </div>
+      <div className="text-center">
+        <a href="/profile">Update Profile</a>
       </div>
       <Divider />
       <List>
