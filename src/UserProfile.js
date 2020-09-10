@@ -106,15 +106,16 @@ export class UserProfile extends React.Component {
 
     handleSubmit(e){
         e.preventDefault();
-        if(this.state.name && this.state.password && this.state.confpassword){
+        if(this.state.password != this.state.confpassword){
+            alert("Las contraseñas no coinciden")
+        }
+        else if(this.state.name && this.state.password && this.state.confpassword){
             localStorage.setItem("name", this.state.name);
             localStorage.setItem("password", this.state.password);
             alert("Se actualizaron los datos correctamente")
             window.location.href = "/tasks";
             
         }
-        else if(this.state.password != this.state.confpassword){
-            alert("Las contraseñas no coinciden")
-        }
+        
     }
 }
