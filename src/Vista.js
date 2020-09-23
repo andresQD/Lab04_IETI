@@ -5,12 +5,13 @@ import moment from "moment";
 import React, { Component } from 'react';
 import { List } from "./List";
 import AddIcon from '@material-ui/icons/Add';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import { Fab } from '@material-ui/core';
 
 export default class Vista extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { items: [], description: '', status: '', dueDate: moment(), name: '', email: '', open: false, newitems: [] };
+        this.state = { items: [], description: '', status: '', dueDate: moment(), name: '', email: '', open: false, openFilter: false, filter: {name: '', status: '', dueDate: null}};
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         this.handleStatusChange = this.handleStatusChange.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
@@ -19,7 +20,12 @@ export default class Vista extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
-        this.filterList = this.filterList.bind(this);
+        this.handleCloseFilter = this.handleCloseFilter.bind(this);
+        this.handleOpenFilter = this.handleOpenFilter.bind(this);
+        this.handleNameFilterChange = this.handleNameFilterChange.bind(this);
+        this.handleStatusFilterChange = this.handleStatusFilterChange.bind(this);
+        this.handleDueDateFilterChange = this.handleDueDateFilterChange.bind(this);
+        this.handleClean = this.handleClean.bind(this);
     }
 
     render() {
@@ -29,7 +35,10 @@ export default class Vista extends React.Component {
                 <List cList={this.state.items} />
 
                 <Fab onClick={this.handleOpen} color="primary" style={{ position: "absolute", right: "0px", bottom: "0", margin: "10px" }}>
-                    <AddIcon></AddIcon>
+                    <AddIcon></AddIcon>   
+                </Fab>
+                <Fab onClick={this.handleOpenFilter} color="secondary" style={{position:"absolute",right: "0px", bottom: "75px", margin: "10px" }}>
+                    <FilterListIcon></FilterListIcon>   
                 </Fab>
                 {/*<div>
                     <React.Fragment>
@@ -41,7 +50,42 @@ export default class Vista extends React.Component {
                         </ul>
                     </React.Fragment>
                         </div>*/}
-    
+                <Dialog className="App" onClose={this.handleCloseFilter} aria-labelledby="simple-dialog-title" open={this.state.openFilter}>
+                    <form onSubmit={this.handleSubmitFilter} className="todo-form" style={{ width: "100%" }}>
+                        <h3>Filter</h3>
+                        <TextField
+                            id="textFilter"
+                            label="Name"
+                            value={this.state.filter.name}
+                            onChange={this.handleNameFilterChange}
+                            margin="normal" />
+                        <br />
+                        <TextField
+                            id="statusFilter"
+                            label="Status"
+                            value={this.state.filter.status}
+                            onChange={this.handleStatusFilterChange}
+                            margin="normal" />
+                        <br />
+                        <TextField
+                            id="due-date"
+                            label="Due Date"
+                            type="date"
+                            defaultValue={ this.state.filter.dueDate ? this.state.filter.dueDate.format('YYYY-MM-DD'): null}
+                            onChange={this.handleDueDateFilterChange}
+                            margin="normal"
+                            InputLabelProps={{
+                                shrink: true,
+                            }} />
+                            <br/><br/>
+                        <Button variant="outlined" color="secondary" type="submit" style={{marginLeft:"5px"}}>
+                            Find
+                        </Button>
+                        <Button onClick={this.handleClean} variant="outlined" color="primary" style={{marginLeft:"5px"}}>
+                            Clean
+                        </Button>
+                    </form>
+                </Dialog>
                 <Dialog className="App" onClose={this.handleClose} aria-labelledby="simple-dialog-title" open={this.state.open}>
                     <form onSubmit={this.handleSubmit} className="todo-form" style={{ width: "100%" }}>
                         <h3>New Task</h3>
@@ -93,17 +137,12 @@ export default class Vista extends React.Component {
         );
     }
 
-    filterList(e) {
-        let updateList = <List cList={this.state.items} />;
-        updateList = updateList.filter((item,i) => {
-            return item.toLowerCase().search(
-                e.target.value.toLowerCase()
-            ) !== -1;
-        });
+    handleOpenFilter() {
+        this.setState({ openFilter: true });
+    }
 
-        this.setState({
-            newitems: updateList
-        });
+    handleCloseFilter() {
+        this.setState({ openFilter: false });
     }
 
     handleOpen() {
@@ -142,6 +181,35 @@ export default class Vista extends React.Component {
 
     updateSearch(e) {
         this.setState({ search: e.target.value });
+    }
+
+    handleNameFilterChange(e) {
+        const fil = this.state.filter
+        fil.name = e.target.value;
+        this.setState({ filter: fil });
+    }
+
+    handleStatusFilterChange(e) {
+        const fil = this.state.filter
+        fil.status = e.target.value;
+        this.setState({ filter: fil });
+    }
+
+    handleDueDateFilterChange(e) {
+        const fil = this.state.filter
+        fil.dueDate = moment(e.target.value, 'YYYY-MM-DD')
+        this.setState({ filter: fil });
+    }
+
+    handleSubmitFilter(e) {
+       /* e.preventDefault();
+        this.setState({ filtering: this.state.filter });
+        this.setState({openFilter:false});*/
+    }
+
+    handleClean(){
+        this.setState({filter: { name: '', status: '', dueDate: null }})
+        this.setState({filtering: { name: '', status: '', dueDate: null }})
     }
 
     handleSubmit(e) {
